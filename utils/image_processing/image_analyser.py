@@ -152,7 +152,11 @@ Your goal is to produce an exhaustive, accurate text description as if the reade
                 "type": "image_url",
                 "image_url": None,  # Placeholder to be updated with actual base64 image during the iteration
                 "detail": "high"
-            }
+            },
+            {
+                "type": "text",
+                "text": None  # Placeholder for context of image
+            },
         ]
     }
 ]
@@ -357,6 +361,15 @@ def analyse_image(image_path, llm):
         message = MESSAGE_TEMPLATE.copy()
         message[1]["content"][1]["image_url"] = {
             "url": f"data:image/png;base64,{base64_image}"}
+
+        # CHANGE MADE HERE
+        # extract context of image
+        base, _ = os.path.splitext(image_path)
+        context_path = f"{base}-context.txt"
+        with open(context_path, "r", encoding="utf-8") as file:
+            context = file.read()
+        message[1]["content"][2]["text"] = context
+        # END OF CHANGES
 
         with get_openai_callback() as cb:
             ai_message = llm.invoke(message)
