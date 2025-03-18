@@ -21,6 +21,7 @@ class Dossier:
         blob_processor_run()
 
     def answer_generator(self):
+        # project_name = "nox_medical_nox_a1_and_t3"
         project_name = "hologic_genius_ai_detection"
         ans_generator = AnswerGenerator(project_name)
         ans_generator.answer_generator_run()
@@ -35,7 +36,11 @@ class Dossier:
 
         print("Step 1: Running image processor...")
         self.image_processor()
-        print("Image processing complete. Moving to blob processing.\n")
+        print("Image processing complete. Moving to text processing.\n")
+
+        print("Step 2: Running text processor...\n")
+        self.text_processor()
+        print("Text processing complete. Moving to blob processing.\n")
 
         print("Step 2: Running text processor...\n")
         self.text_processor()
