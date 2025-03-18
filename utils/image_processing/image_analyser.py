@@ -35,7 +35,8 @@ CONTRAST_THRESHOLD = 50      # Intensity percentile difference
 
 # Azure HSA Store
 config = configparser.ConfigParser()
-config.read("config.prop")
+config_path = os.path.join(os.path.dirname(__file__), "..", "..", "config.prop")
+config.read(config_path)
 azure_hsa_store_config = config["azure_hsa_store"]
 account_name = azure_hsa_store_config["account_name"]
 account_key = azure_hsa_store_config["account_key"]
@@ -61,8 +62,6 @@ logger.addHandler(handler)
 
 
 # Load configuration
-config = configparser.ConfigParser()
-config.read("config.prop")
 azure_llm_config = config["azure_openai_gpt4o-mini"]
 
 # Set environment variables
@@ -417,8 +416,8 @@ def process_images(image_folder, llm, table_name, output_folder="output_images")
 
 def analyse_images():
     # Paths to access the input folder and specify the output folder
-    IMAGE_FOLDER = "images"
-    OUTPUT_FOLDER = "output_images"
+    IMAGE_FOLDER = os.path.join(os.path.dirname(__file__), "..", "..", "images")
+    OUTPUT_FOLDER = os.path.join(os.path.dirname(__file__), "..", "..", "output_images")
 
     table_name = "docmap"
 
