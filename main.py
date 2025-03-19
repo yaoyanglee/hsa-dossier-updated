@@ -35,11 +35,11 @@ class Dossier:
 
         print("Step 1: Running image processor...")
         self.image_processor()
-        print("Image processing complete. Moving to blob processing.\n")
+        print("Image processing complete. Moving to text processing.\n")
 
         print("Step 2: Running text processor...\n")
         self.text_processor()
-        print("Text processing complete. Moving to image processing.\n")
+        print("Text processing complete. Moving to blob processing.\n")
 
         print("Step 3: Running blob processor...")
         self.blob_processor()
@@ -59,6 +59,7 @@ class Dossier:
         minutes, seconds = divmod(rem, 60)
         print(
             f"Total execution time: {int(hours)} hrs {int(minutes)} mins {seconds:.2f} secs")
+
 
 if __name__ == "__main__":
     app = Dossier()
