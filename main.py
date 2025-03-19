@@ -41,17 +41,17 @@ class Dossier:
         self.text_processor()
         print("Text processing complete. Moving to blob processing.\n")
 
-        print("Step 3: Running blob processor...")
-        self.blob_processor()
-        print("Blob processing complete. Moving to answer generation.\n")
+        # print("Step 3: Running blob processor...")
+        # self.blob_processor()
+        # print("Blob processing complete. Moving to answer generation.\n")
 
-        print("Step 4: Running answer generator...")
-        self.answer_generator()
-        print("Answer generation complete. Moving to report generation.\n")
+        # print("Step 4: Running answer generator...")
+        # self.answer_generator()
+        # print("Answer generation complete. Moving to report generation.\n")
 
-        print("Step 5: Running report generator...")
-        self.report_generator()
-        print("Report generation complete. Workflow finished!\n")
+        # print("Step 5: Running report generator...")
+        # self.report_generator()
+        # print("Report generation complete. Workflow finished!\n")
 
         end_time = time.time()
         elapsed_time = end_time - start_time
