@@ -1,5 +1,5 @@
 import base64
-import cv2 
+import cv2
 import logging
 import numpy as np
 import os
@@ -20,6 +20,8 @@ os.environ["EXTRACT_IMAGE_BLOCK_CROP_HORIZONTAL_PAD"] = str(HORIZONTAL_PAD)
 os.environ["EXTRACT_IMAGE_BLOCK_CROP_VERTICAL_PAD"] = str(VERTICAL_PAD)
 
 # --- Configure logger ---
+
+
 def setup_logger(name='image_extractor', log_file='image_extractor.log', level=logging.DEBUG):
     """
     Set up a logger with console and file handlers.
@@ -28,7 +30,7 @@ def setup_logger(name='image_extractor', log_file='image_extractor.log', level=l
         name (str): Name of the logger.
         log_file (str): Log file name.
         level (int): Log level.
-    
+
     Returns:
         logger (logging.Logger): Configured logger instance.
     """
@@ -38,14 +40,16 @@ def setup_logger(name='image_extractor', log_file='image_extractor.log', level=l
         logger.setLevel(level)
 
         # Define log folder relative to this script
-        log_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../../logs")
+        log_dir = os.path.join(os.path.dirname(
+            os.path.abspath(__file__)), "../../logs")
         os.makedirs(log_dir, exist_ok=True)
         log_file_path = os.path.join(log_dir, log_file)
 
         # Console handler
         console_handler = logging.StreamHandler()
         console_handler.setLevel(logging.INFO)
-        formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+        formatter = logging.Formatter(
+            '%(asctime)s - %(levelname)s - %(message)s')
         console_handler.setFormatter(formatter)
         logger.addHandler(console_handler)
 
@@ -93,7 +97,8 @@ def save_image_context(image_context, logger, verified_dir, parent_label):
         verified_dir (str): Directory to save the context file.
         parent_label (str): Label for the image (e.g., figure number).
     """
-    context_file_path = os.path.join(verified_dir, f"{parent_label}-context.txt")
+    context_file_path = os.path.join(
+        verified_dir, f"{parent_label}-context.txt")
     with open(context_file_path, "w") as context_file:
         context_file.write(image_context)
     logger.info(f"Saved context for {parent_label} to: {context_file_path}")
@@ -118,7 +123,8 @@ def save_verified_image(image_path, logger, verified_dir, parent_label):
             shutil.copy(image_path, dest_path)
             logger.info(f"Saved verified image to: {dest_path}")
         else:
-            logger.warning(f"Source and destination are the same: {image_path}")
+            logger.warning(
+                f"Source and destination are the same: {image_path}")
 
 
 def determine_subfolder_type(subfolder_name):
@@ -151,16 +157,25 @@ def process_all_pdfs_with_structure(directory, logger, output_dir_base="images")
     for root, dirs, files in os.walk(directory):
         parent_folder = os.path.basename(os.path.dirname(root))
         subfolder_type = determine_subfolder_type(os.path.basename(root))
+        print("Parent Folder: ", parent_folder)
+        print("Subfolder type: ", subfolder_type)
 
         if subfolder_type:  # Only process literature or ifu subfolders
-            output_parent_dir = os.path.join(output_dir_base, parent_folder, subfolder_type)
+            output_parent_dir = os.path.join(
+                output_dir_base, parent_folder, subfolder_type)
             os.makedirs(output_parent_dir, exist_ok=True)
 
             for file in files:
                 if file.endswith(".pdf"):
                     pdf_file_path = os.path.join(root, file)
                     file_base_name = generate_output_dir_from_filename(file)
-                    output_dir = os.path.join(output_parent_dir, file_base_name)
+                    output_dir = os.path.join(
+                        output_parent_dir, file_base_name)
+
+                    print("pdf file path: ", pdf_file_path)
+                    print("File base name: ", file_base_name)
+                    print("Output dir: ", output_dir)
+                    print("\n")
 
                     raw_dir = os.path.join(output_dir, "raw")
                     verified_dir = os.path.join(output_dir, "verified")
@@ -169,9 +184,11 @@ def process_all_pdfs_with_structure(directory, logger, output_dir_base="images")
 
                     try:
                         logger.info(f"Processing file: {pdf_file_path}")
-                        extract_pdf_images(pdf_file_path, logger, raw_dir, verified_dir)
+                        extract_pdf_images(
+                            pdf_file_path, logger, raw_dir, verified_dir)
                     except Exception as e:
-                        logger.error(f"Error processing file {pdf_file_path}: {e}")
+                        logger.error(
+                            f"Error processing file {pdf_file_path}: {e}")
 
 
 def generate_output_dir_from_filename(filename):
@@ -209,12 +226,14 @@ def extract_pdf_images(filename, logger, raw_dir, verified_dir):
     )
 
     # Process images
-    image_indexes = [i for i, element in enumerate(raw_pdf_elements) if element.category == "Image"]
+    image_indexes = [i for i, element in enumerate(
+        raw_pdf_elements) if element.category == "Image"]
     image_count = 1
     for image_index in image_indexes:
         image_dict = raw_pdf_elements[image_index].metadata.to_dict()
         image_path = image_dict.get("image_path", "")
-        detection_class_prob = float(image_dict.get("detection_class_prob", 0.0))
+        detection_class_prob = float(
+            image_dict.get("detection_class_prob", 0.0))
 
         if detection_class_prob >= 0.8:
             logger.info(f"Processing verified image: {image_path}")
@@ -222,18 +241,21 @@ def extract_pdf_images(filename, logger, raw_dir, verified_dir):
             parent_label = f"figure{image_count}"
 
             image_context = get_image_context(raw_pdf_elements, image_index)
-            save_image_context(image_context, logger, verified_dir, parent_label)
+            save_image_context(image_context, logger,
+                               verified_dir, parent_label)
             save_verified_image(image_path, logger, verified_dir, parent_label)
             image_count += 1
         logger.info("-" * 153)
 
     # Process tables
-    image_indexes = [i for i, element in enumerate(raw_pdf_elements) if element.category == "Table"]
+    image_indexes = [i for i, element in enumerate(
+        raw_pdf_elements) if element.category == "Table"]
     table_count = 1
     for image_index in image_indexes:
         image_dict = raw_pdf_elements[image_index].metadata.to_dict()
         image_path = image_dict.get("image_path", "")
-        detection_class_prob = float(image_dict.get("detection_class_prob", 0.0))
+        detection_class_prob = float(
+            image_dict.get("detection_class_prob", 0.0))
 
         if detection_class_prob >= 0.8:
             logger.info(f"Processing verified table: {image_path}")
@@ -241,20 +263,21 @@ def extract_pdf_images(filename, logger, raw_dir, verified_dir):
             parent_label = f"table{table_count}"
 
             image_context = get_image_context(raw_pdf_elements, image_index)
-            save_image_context(image_context, logger, verified_dir, parent_label)
+            save_image_context(image_context, logger,
+                               verified_dir, parent_label)
             save_verified_image(image_path, logger, verified_dir, parent_label)
             table_count += 1
         logger.info("-" * 153)
 
 
-def extract_images():
+def extract_images(project_name):
     # -- Setup logger --
     logger = setup_logger()
 
     # -- Start processing PDFs from the specified directory --
-    directory = r"docs/"
-    process_all_pdfs_with_structure(directory, logger, output_dir_base="images")
-
+    directory = rf"docs/{project_name}"
+    process_all_pdfs_with_structure(
+        directory, logger, output_dir_base="images")
 
 
 if __name__ == "__main__":

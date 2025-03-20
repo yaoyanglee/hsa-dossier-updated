@@ -150,7 +150,7 @@ def extract_and_chunk_by_title_using_pymupdf(pdf_path):
     return acceptable, merged_chunks
 
 
-def text_processor_run():
+def text_processor_run(project_files):
     logging.basicConfig(level=logging.INFO)
     docs_directory = "docs/"
     output_dir_base = "text_sections"
@@ -158,17 +158,17 @@ def text_processor_run():
 
     subfolder_type = ""
 
-    # Get all PDF files from the directory
-    pdf_files = [
-        os.path.join(root, file)
-        for root, _, files in os.walk(docs_directory)
-        for file in files if file.endswith(".pdf")
-    ]
+    # # Get all PDF files from the directory
+    # pdf_files = [
+    #     os.path.join(root, file)
+    #     for root, _, files in os.walk(docs_directory)
+    #     for file in files if file.endswith(".pdf")
+    # ]
 
-    if not pdf_files:
+    if not project_files:
         logger.info("No PDF files found in the directory.")
     else:
-        for filename in pdf_files:
+        for filename in project_files:
             try:
                 logger.info(f"Processing file: {filename}")
                 logger.info(f"Processing file using pymupdf: {filename}")
@@ -197,15 +197,18 @@ def text_processor_run():
                 # Convert to lowercase and replace spaces with underscores
                 project_name = os.path.basename(
                     parent_path).lower().replace(" ", "_")
+                print("project name: ", project_name)
 
                 # Derive source_folder name from the filename (remove extension and apply formatting)
                 base_filename = os.path.basename(filename)
                 document_name = os.path.splitext(base_filename)[0].lower().replace(
                     " ", "_")  # Convert to lowercase and replace spaces with underscores
+                print("document name: ", document_name)
 
                 # Derive subfolder name based on parent folder
                 subfolder_name = os.path.basename(
                     os.path.dirname(filename)).lower().replace(" ", "_")
+                print("subfolder name: ", subfolder_name)
 
                 # Check subfolder and categorize
                 if "literature" in subfolder_name:
