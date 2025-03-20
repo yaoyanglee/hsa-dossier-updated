@@ -64,7 +64,7 @@ def process_images(logger, project_name):
 def image_processor_run(project_name):
     logger = setup_logger()
     logger.info("Image processing pipeline initiated.")
-    process_images(logger)
+    process_images(logger, project_name)
     logger.info("Image processing pipeline completed.")
 
 

@@ -71,7 +71,7 @@ class Dossier:
 
         while True:
             try:
-                choice = int(input("Enter the number of your choice: "))
+                choice = int(input("Enter the project of your choice: "))
                 if 1 <= choice <= len(folders):
                     # Return selected folder
                     return folders[choice - 1], folders[choice - 1].lower().replace(" ", "_")
@@ -97,6 +97,7 @@ class Dossier:
         Checks if a document with the given hash already exists in the specified table before inserting.
 
         The function retrieves existing data using the project name and document hash. If the data does
+        not already exist, it inserts the new document data into the table. If the data already exists,
         not already exist, it inserts the new document data into the table. If the data already exists,
         it logs a message and skips the insertion.
 
@@ -133,7 +134,7 @@ class Dossier:
         '''
 
         # Retrieving all the file names in the folder.
-        docs_directory = f"docs/"
+        docs_directory = "docs/"
         # Get all PDF files from the directory
         pdf_files = [
             os.path.join(root, file)
@@ -149,19 +150,20 @@ class Dossier:
 
         if not pdf_files:
             logger.info("No PDF files found in the directory.")
-        for filepath in pdf_files:
-            filepath_parts = filepath.split(os.sep)
-            filename, _ = os.path.splitext(filepath_parts[-1])
-            filename = filename.lower().replace(" ", "_")
-            folder_name = filepath_parts[-3]
+        else:
+            for filepath in pdf_files:
+                filepath_parts = filepath.split(os.sep)
+                filename, _ = os.path.splitext(filepath_parts[-1])
+                filename = filename.lower().replace(" ", "_")
+                folder_name = filepath_parts[-3]
 
-            hashed_filename = self.hash_document_name(filename)
-            # print("Path parts: ", folder_name)
-            # print("Filename: ", filename)
-            # print("Hashed filename: ", hashed_filename)
+                hashed_filename = self.hash_document_name(filename)
+                # print("Path parts: ", folder_name)
+                # print("Filename: ", filename)
+                # print("Hashed filename: ", hashed_filename)
 
-            self.insert_data_with_check(
-                self.table_name, self.clean_project_name, hashed_filename, filename)
+                self.insert_data_with_check(
+                    self.table_name, self.clean_project_name, hashed_filename, filename)
 
             return pdf_files
 
@@ -191,14 +193,14 @@ class Dossier:
         # print("Len Project PDF files: ", len(project_pdf_files))
         logger.info("Set up complete\n")
 
-        # logger.info("Starting workflow...")
-        # logger.info("Step 1: Running image processor...")
-        # self.image_processor()
-        # logger.info("Image processing complete. Moving to text processing.\n")
-
-        print("Step 2: Running text processor...\n")
+        logger.info("Starting workflow...")
+        logger.info("Step 1: Running text processor...\n")
         self.text_processor(project_pdf_files)
-        print("Text processing complete. Moving to blob processing.\n")
+        logger.info("Text processing complete. Moving to image processing.\n")
+
+        print("Step 2: Running image processor...")
+        self.image_processor(self.project_name)
+        print("Image processing complete. Moving to blob processing.\n")
 
         # logger.info("Step 3: Running blob processor...")
         # self.blob_processor()

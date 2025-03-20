@@ -158,6 +158,8 @@ def process_all_pdfs_with_structure(directory, logger, output_dir_base="images")
     for root, dirs, files in os.walk(directory):
         parent_folder = os.path.basename(os.path.dirname(root))
         subfolder_type = determine_subfolder_type(os.path.basename(root))
+        print("Parent Folder: ", parent_folder)
+        print("Subfolder type: ", subfolder_type)
 
         if subfolder_type:  # Only process literature or ifu subfolders
             output_parent_dir = os.path.join(
@@ -170,6 +172,11 @@ def process_all_pdfs_with_structure(directory, logger, output_dir_base="images")
                     file_base_name = generate_output_dir_from_filename(file)
                     output_dir = os.path.join(
                         output_parent_dir, file_base_name)
+
+                    print("pdf file path: ", pdf_file_path)
+                    print("File base name: ", file_base_name)
+                    print("Output dir: ", output_dir)
+                    print("\n")
 
                     raw_dir = os.path.join(output_dir, "raw")
                     verified_dir = os.path.join(output_dir, "verified")
@@ -264,12 +271,12 @@ def extract_pdf_images(filename, logger, raw_dir, verified_dir):
         logger.info("-" * 153)
 
 
-def extract_images():
+def extract_images(project_name):
     # -- Setup logger --
     logger = setup_logger()
 
     # -- Start processing PDFs from the specified directory --
-    directory = r"docs/"
+    directory = rf"docs/{project_name}"
     process_all_pdfs_with_structure(
         directory, logger, output_dir_base="images")
 

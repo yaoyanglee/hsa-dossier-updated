@@ -184,9 +184,11 @@ def upload_local_to_blob(logger):
         files_to_upload = get_all_files_with_custom_blob_name(
             [directory], file_type, logger)
 
-        if files_to_upload:
-            upload_files_to_blob(
-                connection_string, container_name, files_to_upload, logger)
-        else:
-            logger.warning(
-                f"No files found in directory '{directory}' for upload")
+        print("Directory: ", directory)
+        print("Container name: ", container_name)
+        print("Files to upload: ", files_to_upload)
+
+        # if files_to_upload:
+        #     upload_files_to_blob(connection_string, container_name, files_to_upload, logger)
+        # else:
+        #     logger.warning(f"No files found in directory '{directory}' for upload")
