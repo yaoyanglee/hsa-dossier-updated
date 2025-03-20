@@ -47,10 +47,10 @@ def setup_logger(name='image_processor', log_file='image_processor.log', level=l
     return logger
 
 
-def process_images(logger):
+def process_images(logger, project_name):
     try:
         logger.info("Starting the image extraction process...")
-        extract_images()
+        extract_images(project_name)
         logger.info("Image extraction completed successfully.")
 
         logger.info("Starting the image analysis process...")
@@ -61,10 +61,10 @@ def process_images(logger):
             f"An error occurred during processing: {e}", exc_info=True)
 
 
-def image_processor_run():
+def image_processor_run(project_name):
     logger = setup_logger()
     logger.info("Image processing pipeline initiated.")
-    process_images(logger)
+    process_images(logger, project_name)
     logger.info("Image processing pipeline completed.")
 
 

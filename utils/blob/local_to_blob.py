@@ -7,6 +7,8 @@ from pathlib import Path
 from utils.table import azure_table_client
 
 # --- Functions ---
+
+
 def create_container(blob_service_client, container_name, logger):
     """
     Create a container in Azure Blob Storage if it doesn't exist.
@@ -17,7 +19,8 @@ def create_container(blob_service_client, container_name, logger):
         logger: Centralized logger instance
     """
     try:
-        container_client = blob_service_client.get_container_client(container_name)
+        container_client = blob_service_client.get_container_client(
+            container_name)
         container_client.create_container()
         logger.info(f"Container '{container_name}' created successfully")
     except Exception as e:
@@ -43,8 +46,9 @@ def get_all_files_with_custom_blob_name(root_directories, file_type, logger):
         list: List of tuples containing (local_file_path, blob_name).
     """
     all_files = []
-    logger.info(f"Scanning directories: {root_directories} for files of type '{file_type}'")
-    
+    logger.info(
+        f"Scanning directories: {root_directories} for files of type '{file_type}'")
+
     for root_dir in root_directories:
         for dirpath, _, files in os.walk(root_dir):
             for file in files:
@@ -53,21 +57,25 @@ def get_all_files_with_custom_blob_name(root_directories, file_type, logger):
 
                     if file_type == ".txt":
                         # Allow all .txt files
-                        blob_name = os.path.basename(file)  # Direct file upload for text files
+                        # Direct file upload for text files
+                        blob_name = os.path.basename(file)
                         all_files.append((local_file_path, blob_name))
                     elif file_type == ".jpg":
                         # Include only files within 'verified' subfolders
                         if "verified" in dirpath.lower():
-                            doc_folder = os.path.basename(os.path.dirname(dirpath)).lower().replace(" ", "_")
+                            doc_folder = os.path.basename(
+                                os.path.dirname(dirpath)).lower().replace(" ", "_")
 
                             # Determine two and three levels up for subfolder type and source
                             two_levels_up = Path(dirpath).parents[1]
-                            subfolder_name = os.path.basename(two_levels_up).lower().replace(" ", "_")
+                            subfolder_name = os.path.basename(
+                                two_levels_up).lower().replace(" ", "_")
                             three_levels_up = Path(dirpath).parents[2]
                             source_name = three_levels_up.name.lower().replace(" ", "_")
 
                             logger.debug(f"DEBUG: Doc Folder: {doc_folder}")
-                            logger.debug(f"DEBUG: Subfolder Name (two levels up): {subfolder_name}")
+                            logger.debug(
+                                f"DEBUG: Subfolder Name (two levels up): {subfolder_name}")
 
                             # Determine subfolder type
                             if "literature" in subfolder_name:
@@ -77,7 +85,8 @@ def get_all_files_with_custom_blob_name(root_directories, file_type, logger):
                             else:
                                 subfolder_type = "others"
 
-                            logger.debug(f"DEBUG: Subfolder Type: {subfolder_type}")
+                            logger.debug(
+                                f"DEBUG: Subfolder Type: {subfolder_type}")
 
                             hashed_doc = azure_table_client.retrieve_by_doc_name(
                                 table_name="docmap",
@@ -89,7 +98,7 @@ def get_all_files_with_custom_blob_name(root_directories, file_type, logger):
                             blob_name = f"{source_name}-{hashed_doc}-{subfolder_type}-{file}"
                             logger.info(f"Adding {blob_name}")
                             all_files.append((local_file_path, blob_name))
-    
+
     logger.info(f"Found {len(all_files)} files of type '{file_type}'")
     return all_files
 
@@ -105,16 +114,20 @@ def upload_files_to_blob(storage_connection_string, container_name, files_to_upl
         logger: Centralized logger instance
     """
     logger.info(f"Starting upload process to container '{container_name}'")
-    
+
     try:
-        blob_service_client = BlobServiceClient.from_connection_string(storage_connection_string)
-        container_client = blob_service_client.get_container_client(container_name)
-        logger.info(f"Successfully initialized blob service client for container '{container_name}'")
-        
+        blob_service_client = BlobServiceClient.from_connection_string(
+            storage_connection_string)
+        container_client = blob_service_client.get_container_client(
+            container_name)
+        logger.info(
+            f"Successfully initialized blob service client for container '{container_name}'")
+
         create_container(blob_service_client, container_name, logger)
-        
-        upload_stats = {'successful': 0, 'failed': 0, 'total_size': 0}  # Track statistics
-        
+
+        upload_stats = {'successful': 0, 'failed': 0,
+                        'total_size': 0}  # Track statistics
+
         with alive_bar(len(files_to_upload), title="Uploading files", force_tty=True) as bar:
             for local_file_path, blob_name in files_to_upload:
                 try:
@@ -126,20 +139,22 @@ def upload_files_to_blob(storage_connection_string, container_name, files_to_upl
 
                     upload_stats['successful'] += 1
                     upload_stats['total_size'] += file_size
-                    logger.info(f"Uploaded: {local_file_path} → {container_name}/{blob_name}")
+                    logger.info(
+                        f"Uploaded: {local_file_path} → {container_name}/{blob_name}")
                 except Exception as e:
                     upload_stats['failed'] += 1
                     logger.error(f"Failed to upload {local_file_path}: {e}")
                 bar()
-        
+
         total_size_mb = upload_stats['total_size'] / (1024 * 1024)
-        logger.info(f"Upload stats: {upload_stats['successful']} successful, {upload_stats['failed']} failed")
+        logger.info(
+            f"Upload stats: {upload_stats['successful']} successful, {upload_stats['failed']} failed")
         logger.info(f"Total data transferred: {total_size_mb:.2f} MB")
-        
+
     except Exception as e:
         logger.error(f"Error uploading to container '{container_name}': {e}")
         raise
-    
+
 
 def upload_local_to_blob(logger):
     """
@@ -160,17 +175,20 @@ def upload_local_to_blob(logger):
     }
 
     logger.info("Starting local to blob upload process")
-    
+
     for directory, container_name in directory_container_mapping.items():
-        logger.info(f"Processing directory '{directory}' for container '{container_name}'")
-        
+        logger.info(
+            f"Processing directory '{directory}' for container '{container_name}'")
+
         file_type = ".jpg" if directory == "images" else ".txt"
-        files_to_upload = get_all_files_with_custom_blob_name([directory], file_type, logger)
-        
-        if files_to_upload:
-            upload_files_to_blob(connection_string, container_name, files_to_upload, logger)
-        else:
-            logger.warning(f"No files found in directory '{directory}' for upload")
+        files_to_upload = get_all_files_with_custom_blob_name(
+            [directory], file_type, logger)
 
+        print("Directory: ", directory)
+        print("Container name: ", container_name)
+        print("Files to upload: ", files_to_upload)
 
-
+        # if files_to_upload:
+        #     upload_files_to_blob(connection_string, container_name, files_to_upload, logger)
+        # else:
+        #     logger.warning(f"No files found in directory '{directory}' for upload")

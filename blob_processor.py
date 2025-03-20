@@ -70,10 +70,10 @@ def blob_processor_run():
         logger.info("local_to_blob execution completed")
 
         # Step 2: Push files from Blob Storage to Vector Store
-        logger.info(
-            "Executing blob_to_vector: Uploading all blob files to vector store")
-        upload_blob_to_vector(logger)
-        logger.info("blob_to_vector execution completed")
+        # logger.info(
+        #     "Executing blob_to_vector: Uploading all blob files to vector store")
+        # upload_blob_to_vector(logger)
+        # logger.info("blob_to_vector execution completed")
         logger.info("Blob Processor completed successfully")
     except Exception as e:
         logger.error(f"Blob Processor encountered an error: {e}")
