@@ -42,10 +42,6 @@ class Dossier:
         self.text_processor()
         print("Text processing complete. Moving to blob processing.\n")
 
-        print("Step 2: Running text processor...\n")
-        self.text_processor()
-        print("Text processing complete. Moving to image processing.\n")
-
         print("Step 3: Running blob processor...")
         self.blob_processor()
         print("Blob processing complete. Moving to answer generation.\n")
