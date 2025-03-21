@@ -36,7 +36,8 @@ CONTRAST_THRESHOLD = 50      # Intensity percentile difference
 # Azure HSA Store
 config = configparser.ConfigParser()
 # config_path = os.path.join(os.path.dirname(__file__), "..", "..", "config.prop")
-config.read(config_path)
+# config.read(config_path)
+config.read("config.prop")
 azure_hsa_store_config = config["azure_hsa_store"]
 account_name = azure_hsa_store_config["account_name"]
 account_key = azure_hsa_store_config["account_key"]
