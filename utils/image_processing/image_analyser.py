@@ -360,23 +360,24 @@ def analyse_image(image_path, llm):
         # extract image_url
         base64_image = encode_image(image_path)
         message = MESSAGE_TEMPLATE.copy()
-        message[1]["content"][1]["image_url"] = {"url": f"data:image/png;base64,{base64_image}"}
+        message[1]["content"][1]["image_url"] = {
+            "url": f"data:image/png;base64,{base64_image}"}
 
         # extract context of image
         base, _ = os.path.splitext(image_path)
         context_path = f"{base}-context.txt"
-        with open(context_path, "r", encoding="utf-8") as file:
+        with open(context_path, "r") as file:
             context = file.read()
         message[1]["content"][2]["text"] = context
 
-        # CHANGE MADE HERE
-        # extract context of image
-        base, _ = os.path.splitext(image_path)
-        context_path = f"{base}-context.txt"
-        with open(context_path, "r", encoding="utf-8") as file:
-            context = file.read()
-        message[1]["content"][2]["text"] = context
-        # END OF CHANGES
+        # # CHANGE MADE HERE
+        # # extract context of image
+        # base, _ = os.path.splitext(image_path)
+        # context_path = f"{base}-context.txt"
+        # with open(context_path, "r", encoding="utf-8") as file:
+        #     context = file.read()
+        # message[1]["content"][2]["text"] = context
+        # # END OF CHANGES
 
         with get_openai_callback() as cb:
             ai_message = llm.invoke(message)

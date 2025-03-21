@@ -155,35 +155,36 @@ class Dossier:
         # print("Len Project PDF files: ", len(project_pdf_files))
         logger.info("Set up complete\n")
 
-        print("Starting workflow...")
-        print("Step 1: Running image processor...")
+        logger.info("Starting workflow...")
+        logger.info("Step 1: Running image processor...")
         self.image_processor()
-        print("Image processing complete. Moving to text processing.\n")
+        logger.info("Image processing complete. Moving to text processing.\n")
 
-        print("Step 2: Running text processor...\n")
-        self.text_processor()
-        print("Text processing complete. Moving to blob processing.\n")
+        # logger.info("Step 2: Running text processor...\n")
+        # self.text_processor()
+        # logger.info("Text processing complete. Moving to blob processing.\n")
 
-        print("Step 3: Running blob processor...")
-        self.blob_processor()
-        print("Blob processing complete. Moving to answer generation.\n")
+        # logger.info("Step 3: Running blob processor...")
+        # self.blob_processor()
+        # logger.info("Blob processing complete. Moving to answer generation.\n")
 
-        print("Step 4: Running answer generator...")
-        self.answer_generator()
-        print("Answer generation complete. Moving to report generation.\n")
+        # logger.info("Step 4: Running answer generator...")
+        # self.answer_generator()
+        # logger.info(
+        #     "Answer generation complete. Moving to report generation.\n")
 
-        print("Step 5: Running report generator...")
-        self.report_generator()
-        print("Report generation complete. Workflow finished!\n")
+        # logger.info("Step 5: Running report generator...")
+        # self.report_generator()
+        # logger.info("Report generation complete. Workflow finished!\n")
 
         end_time = time.time()
         elapsed_time = end_time - start_time
         hours, rem = divmod(elapsed_time, 3600)
         minutes, seconds = divmod(rem, 60)
-        print(
+        logger.info(
             f"Total execution time: {int(hours)} hrs {int(minutes)} mins {seconds:.2f} secs")
 
 
 if __name__ == "__main__":
-    app = Dossier("hologic_genius_ai_detection")
+    app = Dossier("nox_medical_nox_a1_and_t3")
     app.run_workflow()
