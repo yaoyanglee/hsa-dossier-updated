@@ -9,7 +9,7 @@ from unstructured.chunking.title import chunk_by_title
 import pandas as pd
 from langchain_pymupdf4llm import PyMuPDF4LLMLoader
 from langchain_text_splitters import MarkdownHeaderTextSplitter
-import tiktoken 
+import tiktoken
 
 # Load configuration
 config = configparser.ConfigParser()
@@ -99,42 +99,42 @@ def count_tokens(text):
     enc = tiktoken.get_encoding("cl100k_base")  # GPT-4 tokenizer
     return len(enc.encode(text))
 
+
 def extract_and_chunk_by_title_using_pymupdf(pdf_path):
     """Extract and chunk Markdown text while ensuring each chunk has at least `min_tokens`."""
-    min_tokens=300
-    max_tokens=2000
+    min_tokens = 300
+    max_tokens = 2000
     acceptable = True
-    #md_text = pymupdf4llm.to_markdown(pdf_path) 
-    #chunks = text_splitter.split_text(md_text)
+    # md_text = pymupdf4llm.to_markdown(pdf_path)
+    # chunks = text_splitter.split_text(md_text)
     loader = PyMuPDF4LLMLoader(
-    pdf_path,
-    mode="single",
+        pdf_path,
+        mode="single",
     )
 
     md_text = loader.load()
 
     headers_to_split_on = [
 
-    ("#", "Header 1"),
-    ("##", "Header 2"),
-    ("###", "Header 3"),
-    ("####", "Header 4"),
+        ("#", "Header 1"),
+        ("##", "Header 2"),
+        ("###", "Header 3"),
+        ("####", "Header 4"),
 
     ]
     markdown_splitter = MarkdownHeaderTextSplitter(
-    headers_to_split_on=headers_to_split_on, strip_headers=False
+        headers_to_split_on=headers_to_split_on, strip_headers=False
     )
-    
+
     md_header_splits = markdown_splitter.split_text(md_text[0].page_content)
-   
-    
+
     # Merge chunks smaller than min_tokens
     merged_chunks = []
     temp_chunk = ""
-    
+
     for chunk in md_header_splits:
         chunk = chunk.page_content
-        
+
         if count_tokens(temp_chunk) < min_tokens:
             temp_chunk += "\n\n" + chunk  # Merge small chunks
         else:
@@ -164,26 +164,37 @@ def text_processor_run(project_files):
     #     for root, _, files in os.walk(docs_directory)
     #     for file in files if file.endswith(".pdf")
     # ]
+    # # Get all PDF files from the directory
+    # pdf_files = [
+    #     os.path.join(root, file)
+    #     for root, _, files in os.walk(docs_directory)
+    #     for file in files if file.endswith(".pdf")
+    # ]
 
+    if not project_files:
     if not project_files:
         logger.info("No PDF files found in the directory.")
     else:
         for filename in project_files:
+        for filename in project_files:
             try:
                 logger.info(f"Processing file: {filename}")
                 logger.info(f"Processing file using pymupdf: {filename}")
-                acceptable, chunks = extract_and_chunk_by_title_using_pymupdf(filename)
-                
+                acceptable, chunks = extract_and_chunk_by_title_using_pymupdf(
+                    filename)
+
                 if not acceptable:
-                    logger.info(f"Chunks less than 4 or Chunk size too big, Processing file using unstructured: {filename}")
+                    logger.info(
+                        f"Chunks less than 4 or Chunk size too big, Processing file using unstructured: {filename}")
                     # Analyze chunks for the file
                     settings = analyser.analyse_chunks(
                         filename, max_chars_options=[
                             2400, 3200, 4000, 4800, 5600, 6400, 7200]
                     )
-                    
+
                     # Extract and chunk text
-                    elements = partition_pdf(filename=filename, strategy="hi_res")
+                    elements = partition_pdf(
+                        filename=filename, strategy="hi_res")
                     chunks = chunk_by_title(
                         elements,
                         max_characters=settings.max_characters,
@@ -198,16 +209,19 @@ def text_processor_run(project_files):
                 project_name = os.path.basename(
                     parent_path).lower().replace(" ", "_")
                 print("project name: ", project_name)
+                print("project name: ", project_name)
 
                 # Derive source_folder name from the filename (remove extension and apply formatting)
                 base_filename = os.path.basename(filename)
                 document_name = os.path.splitext(base_filename)[0].lower().replace(
                     " ", "_")  # Convert to lowercase and replace spaces with underscores
                 print("document name: ", document_name)
+                print("document name: ", document_name)
 
                 # Derive subfolder name based on parent folder
                 subfolder_name = os.path.basename(
                     os.path.dirname(filename)).lower().replace(" ", "_")
+                print("subfolder name: ", subfolder_name)
                 print("subfolder name: ", subfolder_name)
 
                 # Check subfolder and categorize
@@ -230,6 +244,7 @@ def text_processor_run(project_files):
 
             except Exception as e:
                 logger.error(f"Error processing file {filename}: {e}")
+
 
 if __name__ == "__main__":
     text_processor_run()
