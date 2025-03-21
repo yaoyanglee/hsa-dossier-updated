@@ -1,10 +1,9 @@
 import os
+import os
 import time
 import hashlib
 import logging
 import configparser
-
-from utils.table import azure_table_client
 
 from utils.table import azure_table_client
 from text_processor import text_processor_run
