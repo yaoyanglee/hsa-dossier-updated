@@ -6,6 +6,10 @@ from utils.text_processing.chunk_analyser import ChunkAnalyser
 from utils.text_processing.chunk_refiner import ChunkRefiner
 from unstructured.partition.pdf import partition_pdf
 from unstructured.chunking.title import chunk_by_title
+import pandas as pd
+from langchain_pymupdf4llm import PyMuPDF4LLMLoader
+from langchain_text_splitters import MarkdownHeaderTextSplitter
+import tiktoken 
 
 # Load configuration
 config = configparser.ConfigParser()
@@ -90,6 +94,61 @@ logger.addHandler(handler)
 
 #         except Exception as e:
 #             logger.error(f"Error processing file {filename}: {e}")
+def count_tokens(text):
+    """Count the number of tokens in a given text using TikToken (OpenAI tokenization)."""
+    enc = tiktoken.get_encoding("cl100k_base")  # GPT-4 tokenizer
+    return len(enc.encode(text))
+
+def extract_and_chunk_by_title_using_pymupdf(pdf_path):
+    """Extract and chunk Markdown text while ensuring each chunk has at least `min_tokens`."""
+    min_tokens=300
+    max_tokens=2000
+    acceptable = True
+    #md_text = pymupdf4llm.to_markdown(pdf_path) 
+    #chunks = text_splitter.split_text(md_text)
+    loader = PyMuPDF4LLMLoader(
+    pdf_path,
+    mode="single",
+    )
+
+    md_text = loader.load()
+
+    headers_to_split_on = [
+
+    ("#", "Header 1"),
+    ("##", "Header 2"),
+    ("###", "Header 3"),
+    ("####", "Header 4"),
+
+    ]
+    markdown_splitter = MarkdownHeaderTextSplitter(
+    headers_to_split_on=headers_to_split_on, strip_headers=False
+    )
+    
+    md_header_splits = markdown_splitter.split_text(md_text[0].page_content)
+   
+    
+    # Merge chunks smaller than min_tokens
+    merged_chunks = []
+    temp_chunk = ""
+    
+    for chunk in md_header_splits:
+        chunk = chunk.page_content
+        
+        if count_tokens(temp_chunk) < min_tokens:
+            temp_chunk += "\n\n" + chunk  # Merge small chunks
+        else:
+            merged_chunks.append(temp_chunk)  # Store large enough chunks
+            temp_chunk = chunk  # Start new chunk
+
+    # Add last chunk if not empty
+    if temp_chunk.strip():
+        merged_chunks.append(temp_chunk)
+    if len(merged_chunks) < 4 or any(count_tokens(chunk) > max_tokens for chunk in merged_chunks):
+        acceptable = False
+
+    return acceptable, merged_chunks
+
 
 def text_processor_run():
     logging.basicConfig(level=logging.INFO)
@@ -112,21 +171,25 @@ def text_processor_run():
         for filename in pdf_files:
             try:
                 logger.info(f"Processing file: {filename}")
-
-                # Analyze chunks for the file
-                settings = analyser.analyse_chunks(
-                    filename, max_chars_options=[
-                        2400, 3200, 4000, 4800, 5600, 6400, 7200]
-                )
-
-                # Extract and chunk text
-                elements = partition_pdf(filename=filename, strategy="hi_res")
-                chunks = chunk_by_title(
-                    elements,
-                    max_characters=settings.max_characters,
-                    combine_text_under_n_chars=settings.combine_under_chars,
-                    overlap=settings.overlap
-                )
+                logger.info(f"Processing file using pymupdf: {filename}")
+                acceptable, chunks = extract_and_chunk_by_title_using_pymupdf(filename)
+                
+                if not acceptable:
+                    logger.info(f"Chunks less than 4 or Chunk size too big, Processing file using unstructured: {filename}")
+                    # Analyze chunks for the file
+                    settings = analyser.analyse_chunks(
+                        filename, max_chars_options=[
+                            2400, 3200, 4000, 4800, 5600, 6400, 7200]
+                    )
+                    
+                    # Extract and chunk text
+                    elements = partition_pdf(filename=filename, strategy="hi_res")
+                    chunks = chunk_by_title(
+                        elements,
+                        max_characters=settings.max_characters,
+                        combine_text_under_n_chars=settings.combine_under_chars,
+                        overlap=settings.overlap
+                    )
 
                 # Extract parent folder and move up two levels
                 parent_path = os.path.dirname(
@@ -164,3 +227,6 @@ def text_processor_run():
 
             except Exception as e:
                 logger.error(f"Error processing file {filename}: {e}")
+
+if __name__ == "__main__":
+    text_processor_run()
