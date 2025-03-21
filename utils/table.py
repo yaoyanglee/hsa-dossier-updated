@@ -1,5 +1,6 @@
 import configparser
 import logging
+import os
 
 from azure.data.tables import TableServiceClient
 from azure.core.credentials import AzureNamedKeyCredential
@@ -227,6 +228,8 @@ class AzureTableClient:
 
 
 config = configparser.ConfigParser()
+# config_path = os.path.join(os.path.dirname(__file__), "..", "config.prop")
+# config.read(config_path)
 config.read("config.prop")
 azure_hsa_store_config = config["azure_hsa_store"]
 account_name = azure_hsa_store_config["account_name"]

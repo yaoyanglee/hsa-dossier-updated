@@ -5,7 +5,7 @@ Your goal is to provide a comprehensive, well-structured, and critical evaluatio
 ### Instructions
 1. Critically analyse the documents provided and answer a set of questions of given criterion.
 2. For each question, check if the provided sources are sufficient to answer.
-    - if not, answer ""There is not enough information to answer this question.""
+    - if not, answer "There is not enough information to answer this question."
     - if yes, proceed to answer the questions and providing the relevant sources.
 3. Support your assessment by citing the relevant information.
 4. Ensure structured and readable responses using clear formatting.
@@ -72,8 +72,12 @@ Questions:
 8) What is the expected output from the Artificial Intelligence Medical Device?
 9) How are other data sources (e.g., patient historical records, physiological signals, medication records, handwritten text, literature reviews) incorporated as input data, if applicable?
 
-Remember to cite the information when providing your assessment.
-Remember to only answer using information from the documents provided.
+### Additional Guidelines
+- For each question, check if the provided sources are sufficient to answer.
+    - if not, answer "There is not enough information to answer this question."
+    - if yes, proceed to answer the questions and providing the relevant sources.
+- Remember to cite the information when providing your assessment.
+- Remember to only answer using information from the documents provided.
 """
 
 PROMPT_Q2 = """
@@ -91,8 +95,12 @@ Questions:
 9) How is the representativeness of the datasets assessed to ensure they cover the intended use population and conditions?
 10) Are there any limitations in the datasets that could affect the AI model's performance or generalisability?
 
-Remember to cite the information when providing your assessment.
-Remember to only answer using information from the documents provided.
+### Additional Guidelines
+- For each question, check if the provided sources are sufficient to answer.
+    - if not, answer "There is not enough information to answer this question."
+    - if yes, proceed to answer the questions and providing the relevant sources.
+- Remember to cite the information when providing your assessment.
+- Remember to only answer using information from the documents provided.
 """
 
 PROMPT_Q3 = """ 
@@ -107,8 +115,12 @@ Questions:
 6) What are the results of the model evaluation using the selected metrics?
 7) How does the size of the test dataset compare to the training dataset? (e.g. 80% / 20% split between training and validation)
 
-Remember to cite the information when providing your assessment.
-Remember to only answer using information from the documents provided.
+### Additional Guidelines
+- For each question, check if the provided sources are sufficient to answer.
+    - if not, answer "There is not enough information to answer this question."
+    - if yes, proceed to answer the questions and providing the relevant sources.
+- Remember to cite the information when providing your assessment.
+- Remember to only answer using information from the documents provided.
 """
 
 PROMPT_Q4 = """ 
@@ -133,8 +145,12 @@ Questions:
 4) What are the known limitations of the AI Medical Device and its operating system, and how are these communicated to the end user?
 5) What evidence demonstrates a valid clinical association between the AI Medical Device's output and the targeted clinical condition?
 
-Remember to cite the information when providing your assessment.
-Remember to only answer using information from the documents provided.
+### Additional Guidelines
+- For each question, check if the provided sources are sufficient to answer.
+    - if not, answer "There is not enough information to answer this question."
+    - if yes, proceed to answer the questions and providing the relevant sources.
+- Remember to cite the information when providing your assessment.
+- Remember to only answer using information from the documents provided.
 """
 
 PROMPT_Q6 = """ 
@@ -146,8 +162,12 @@ Questions:
 3) How will feedback from users be collected and used for improvements, if applicable?
 4) What is the process for updating the Machine Learning model post-deployment?
 
-Remember to cite the information when providing your assessment.
-Remember to only answer using information from the documents provided.
+### Additional Guidelines
+- For each question, check if the provided sources are sufficient to answer.
+    - if not, answer "There is not enough information to answer this question."
+    - if yes, proceed to answer the questions and providing the relevant sources.
+- Remember to cite the information when providing your assessment.
+- Remember to only answer using information from the documents provided.
 """
 
 PROMPT_FINAL = """ 
@@ -161,13 +181,14 @@ Questions:
 5) Is the Test protocol for performance verification and validation of the Artificial Intelligence Medical Devices valid?
 6) Is the Interval for training data update cycle mentioned?
 
-Give a short conclusion based on the questions above and overall assessment.
-Remember to cite the information when providing your assessment.
+### Additional Guidelines
+- Remember to cite the information when providing your assessment.
+- Remember to only answer using information from the documents provided.
 """
 
 PROMPTS_DICT = {"Input data and features/ attributes used to generate the corresponding output": PROMPT_Q1,
                 "Source, size and attribution of training, validation and test datasets": PROMPT_Q2,
-                "Artificial Intelligence model description and selection": PROMPT_Q3,
+                "Artificial Intelligence model description and selection": PROMPT_Q3, 
                 "Device workflow including how the output result should be used": PROMPT_Q4,
                 "Test protocol for performance verification and validation of the Artificial Intelligence Medical Devices": PROMPT_Q5,
                 "Interval for training data update cycle": PROMPT_Q6,

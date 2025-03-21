@@ -163,13 +163,22 @@ class AnswerGenerator:
             citations = []
 
             # Process annotations and collect citations
-            for index, annotation in enumerate(annotations):
+            annotation_map, id = {}, 0
+            for annotation in annotations:
+                if annotation.text not in annotation_map:
+                    annotation_map[annotation.text] = id
+                    id += 1
+
+                    # cite actual filename
+                    if file_citation := getattr(annotation, "file_citation", None):
+                        cited_file = self.client.files.retrieve(
+                            file_citation.file_id)
+                        citations.append(f"[{annotation_map[annotation.text]}] {cited_file.filename}")
+
+                # replace citation as index in response
                 message_content.value = message_content.value.replace(
-                    annotation.text, f"[{index}]")
-                if file_citation := getattr(annotation, "file_citation", None):
-                    cited_file = self.client.files.retrieve(
-                        file_citation.file_id)
-                    citations.append(f"[{index}] {cited_file.filename}")
+                    annotation.text, f"[{annotation_map[annotation.text]}]")
+
 
             answer = message_content.value
             self.logger.info(

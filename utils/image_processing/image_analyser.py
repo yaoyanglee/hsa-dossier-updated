@@ -35,6 +35,8 @@ CONTRAST_THRESHOLD = 50      # Intensity percentile difference
 
 # Azure HSA Store
 config = configparser.ConfigParser()
+# config_path = os.path.join(os.path.dirname(__file__), "..", "..", "config.prop")
+# config.read(config_path)
 config.read("config.prop")
 azure_hsa_store_config = config["azure_hsa_store"]
 account_name = azure_hsa_store_config["account_name"]
@@ -61,8 +63,6 @@ logger.addHandler(handler)
 
 
 # Load configuration
-config = configparser.ConfigParser()
-config.read("config.prop")
 azure_llm_config = config["azure_openai_gpt4o-mini"]
 
 # Set environment variables
@@ -357,10 +357,17 @@ def analyse_image(image_path, llm):
         str: The content of the generated response from the LLM, or None if an error occurred.
     """
     try:
+        # extract image_url
         base64_image = encode_image(image_path)
         message = MESSAGE_TEMPLATE.copy()
-        message[1]["content"][1]["image_url"] = {
-            "url": f"data:image/png;base64,{base64_image}"}
+        message[1]["content"][1]["image_url"] = {"url": f"data:image/png;base64,{base64_image}"}
+
+        # extract context of image
+        base, _ = os.path.splitext(image_path)
+        context_path = f"{base}-context.txt"
+        with open(context_path, "r", encoding="utf-8") as file:
+            context = file.read()
+        message[1]["content"][2]["text"] = context
 
         # CHANGE MADE HERE
         # extract context of image
@@ -419,6 +426,8 @@ def process_images(image_folder, llm, table_name, output_folder="output_images")
 
 def analyse_images():
     # Paths to access the input folder and specify the output folder
+    # IMAGE_FOLDER = os.path.join(os.path.dirname(__file__), "..", "..", "images")
+    # OUTPUT_FOLDER = os.path.join(os.path.dirname(__file__), "..", "..", "output_images")
     IMAGE_FOLDER = "images"
     OUTPUT_FOLDER = "output_images"
 
