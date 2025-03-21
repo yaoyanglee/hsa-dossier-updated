@@ -35,7 +35,7 @@ CONTRAST_THRESHOLD = 50      # Intensity percentile difference
 
 # Azure HSA Store
 config = configparser.ConfigParser()
-config_path = os.path.join(os.path.dirname(__file__), "..", "..", "config.prop")
+# config_path = os.path.join(os.path.dirname(__file__), "..", "..", "config.prop")
 config.read(config_path)
 azure_hsa_store_config = config["azure_hsa_store"]
 account_name = azure_hsa_store_config["account_name"]
@@ -425,8 +425,10 @@ def process_images(image_folder, llm, table_name, output_folder="output_images")
 
 def analyse_images():
     # Paths to access the input folder and specify the output folder
-    IMAGE_FOLDER = os.path.join(os.path.dirname(__file__), "..", "..", "images")
-    OUTPUT_FOLDER = os.path.join(os.path.dirname(__file__), "..", "..", "output_images")
+    # IMAGE_FOLDER = os.path.join(os.path.dirname(__file__), "..", "..", "images")
+    # OUTPUT_FOLDER = os.path.join(os.path.dirname(__file__), "..", "..", "output_images")
+    IMAGE_FOLDER = "images"
+    OUTPUT_FOLDER = "output_images"
 
     table_name = "docmap"
 
