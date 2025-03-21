@@ -210,6 +210,7 @@ class ReportGenerator:
 
     def generate_excel(self, excel_data):
         # Final report
+        # CHECK HERE
         output_images_folder = f'{self.project_name}_supp_images'
         output_file_name = "output.xlsx"
         workbook = xlsxwriter.Workbook(output_file_name)
