@@ -186,16 +186,17 @@ class Dossier:
     def run_workflow(self):
         start_time = time.time()
 
-        logger.info("Setting up workflow requirements")
+        logger.info(
+            f"Inserting filename to hashed filename reference into Azure Table: {self.table_name}")
         project_pdf_files = self.workflow_setup()
         # print("Project PDF files: ", project_pdf_files)
         # print("Len Project PDF files: ", len(project_pdf_files))
         logger.info("Set up complete\n")
 
         logger.info("Starting workflow...")
-        logger.info("Step 1: Running text processor...\n")
-        self.text_processor(project_pdf_files)
-        logger.info("Text processing complete. Moving to image processing.\n")
+        # logger.info("Step 1: Running text processor...\n")
+        # self.text_processor(project_pdf_files)
+        # logger.info("Text processing complete. Moving to image processing.\n")
 
         print("Step 2: Running image processor...")
         self.image_processor(self.project_name)
