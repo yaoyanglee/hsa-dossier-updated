@@ -41,6 +41,16 @@ class Dossier:
     # Helper function/s
 
     def get_project_names(self, dir):
+        '''
+        Given the directory containing the projects for executing the workflow, read the available project & allow user selection.
+
+        Parameters:
+            dir (str): relative path of the folder containing the different project folders
+
+        Returns:
+            str: The name of the project selected by the user
+            str: The name of the project selected by the user in lowercase and spaces replaced with "_"
+        '''
         folders = [name for name in os.listdir(
             dir) if os.path.isdir(os.path.join(dir, name))]
 
@@ -99,6 +109,17 @@ class Dossier:
                 f"Data with hash value '{hashed_doc_name}' already exists. Skipping insert.")
 
     def workflow_setup(self):
+        '''
+        Set ups the workflow by creating the azure table docmap if not present.
+        Inserts the document name and hash name reference into the created azure table, docmap.
+
+        Parameters:
+            None
+
+        Returns:
+            None: This function performs an insertion into the azure table
+        '''
+
         # Retrieving all the file names in the folder.
         docs_directory = "docs/"
         # Get all PDF files from the directory
@@ -160,22 +181,22 @@ class Dossier:
         self.image_processor()
         logger.info("Image processing complete. Moving to text processing.\n")
 
-        # logger.info("Step 2: Running text processor...\n")
-        # self.text_processor()
-        # logger.info("Text processing complete. Moving to blob processing.\n")
+        logger.info("Step 2: Running text processor...\n")
+        self.text_processor()
+        logger.info("Text processing complete. Moving to blob processing.\n")
 
-        # logger.info("Step 3: Running blob processor...")
-        # self.blob_processor()
-        # logger.info("Blob processing complete. Moving to answer generation.\n")
+        logger.info("Step 3: Running blob processor...")
+        self.blob_processor()
+        logger.info("Blob processing complete. Moving to answer generation.\n")
 
-        # logger.info("Step 4: Running answer generator...")
-        # self.answer_generator()
-        # logger.info(
-        #     "Answer generation complete. Moving to report generation.\n")
+        logger.info("Step 4: Running answer generator...")
+        self.answer_generator()
+        logger.info(
+            "Answer generation complete. Moving to report generation.\n")
 
-        # logger.info("Step 5: Running report generator...")
-        # self.report_generator()
-        # logger.info("Report generation complete. Workflow finished!\n")
+        logger.info("Step 5: Running report generator...")
+        self.report_generator()
+        logger.info("Report generation complete. Workflow finished!\n")
 
         end_time = time.time()
         elapsed_time = end_time - start_time

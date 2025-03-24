@@ -210,6 +210,7 @@ class ReportGenerator:
 
     def generate_excel(self, excel_data):
         # Final report
+        # CHECK HERE
         output_images_folder = f'{self.project_name}_supp_images'
         output_file_name = "output.xlsx"
         workbook = xlsxwriter.Workbook(output_file_name)
@@ -279,6 +280,10 @@ class ReportGenerator:
                 overview_worksheet.write(i+1, 0, i+1, sn_format)
                 criterion = self.mapping[k]
                 overview_worksheet.write(i+1, 1, criterion, criteria_format)
+
+                # print("K: ", k)
+                # print()
+                # print("V: ", v)
 
                 # write to individual tabs
                 detailed_worksheet = workbook.add_worksheet(f'{k}')
@@ -361,6 +366,9 @@ class ReportGenerator:
                                     content = self.container_client.download_blob(
                                         item_path).readall()
                                     text = content.decode()
+                                    text = text.replace("\r", "")
+                                    # print("Text: ", text)
+
                                     detailed_worksheet.write_rich_string(
                                         n+3, citation_col_count-1, bold, item[1], '\n' + text, citation_format)
                                 except:
