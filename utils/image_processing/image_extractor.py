@@ -99,7 +99,8 @@ def save_image_context(image_context, logger, verified_dir, parent_label):
     """
     context_file_path = os.path.join(
         verified_dir, f"{parent_label}-context.txt")
-    with open(context_file_path, "w", encoding='utf-8') as context_file:
+    # REMOVED ENCODING UTF-8 HERE
+    with open(context_file_path, "w") as context_file:
         context_file.write(image_context)
     logger.info(f"Saved context for {parent_label} to: {context_file_path}")
 
