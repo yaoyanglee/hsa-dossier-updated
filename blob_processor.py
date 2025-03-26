@@ -72,7 +72,7 @@ def blob_processor_run(project_name, clean_project_name):
         # Step 2: Push files from Blob Storage to Vector Store
         logger.info(
             "Executing blob_to_vector: Uploading all blob files to vector store")
-        upload_blob_to_vector(logger)
+        upload_blob_to_vector(logger, clean_project_name)
         logger.info("blob_to_vector execution completed")
         logger.info("Blob Processor completed successfully")
     except Exception as e:
