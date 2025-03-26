@@ -1,4 +1,5 @@
 import os
+import os
 import time
 import hashlib
 import logging
@@ -194,9 +195,9 @@ class Dossier:
         logger.info("Set up complete\n")
 
         logger.info("Starting workflow...")
-        # logger.info("Step 1: Running text processor...\n")
-        # self.text_processor(project_pdf_files)
-        # logger.info("Text processing complete. Moving to image processing.\n")
+        logger.info("Step 1: Running text processor...\n")
+        self.text_processor(project_pdf_files)
+        logger.info("Text processing complete. Moving to image processing.\n")
 
         print("Step 2: Running image processor...")
         self.image_processor(self.project_name)
