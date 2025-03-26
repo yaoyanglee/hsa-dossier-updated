@@ -54,7 +54,7 @@ def process_images(logger, project_name):
         logger.info("Image extraction completed successfully.")
 
         logger.info("Starting the image analysis process...")
-        analyse_images()
+        analyse_images(project_name)
         logger.info("Image analysis completed successfully.")
     except Exception as e:
         logger.error(

@@ -31,7 +31,7 @@ def create_container(blob_service_client, container_name, logger):
             raise
 
 
-def get_all_files_with_custom_blob_name(root_directories, file_type, logger):
+def get_all_files_with_custom_blob_name(root_directories, file_type, logger, clean_project_name):
     """
     Fetch all files of a specific type from the given root directories and generate custom blob names.
     For '.jpg' files, include only files within 'verified' subfolders.
@@ -94,10 +94,14 @@ def get_all_files_with_custom_blob_name(root_directories, file_type, logger):
                                 doc_name=doc_folder
                             ) or "unknown_document"
 
-                            # Generate custom blob name
-                            blob_name = f"{source_name}-{hashed_doc}-{subfolder_type}-{file}"
-                            logger.info(f"Adding {blob_name}")
-                            all_files.append((local_file_path, blob_name))
+                            if clean_project_name == source_name:
+                                # Generate custom blob name
+                                blob_name = f"{source_name}-{hashed_doc}-{subfolder_type}-{file}"
+                                logger.info(f"Adding {blob_name}")
+                                all_files.append((local_file_path, blob_name))
+                            else:
+                                logger.info(
+                                    f"{source_name} is not part of the the current project scope: {clean_project_name}")
 
     logger.info(f"Found {len(all_files)} files of type '{file_type}'")
     return all_files
@@ -156,7 +160,7 @@ def upload_files_to_blob(storage_connection_string, container_name, files_to_upl
         raise
 
 
-def upload_local_to_blob(logger):
+def upload_local_to_blob(logger, project_name, clean_project_name):
     """
     Main function to upload files from local directories to Azure Blob Storage.
     """
@@ -180,15 +184,35 @@ def upload_local_to_blob(logger):
         logger.info(
             f"Processing directory '{directory}' for container '{container_name}'")
 
+        print("Directory: ", directory)
         file_type = ".jpg" if directory == "images" else ".txt"
         files_to_upload = get_all_files_with_custom_blob_name(
-            [directory], file_type, logger)
+            [directory], file_type, logger, clean_project_name)
 
-        print("Directory: ", directory)
-        print("Container name: ", container_name)
-        print("Files to upload: ", files_to_upload)
+        # Filter files that contain clean_project_name (case-insensitive + handles spaces vs underscores)
+        filtered_files_to_upload = [
+            (file_path, file_name) for file_path, file_name in files_to_upload
+            if clean_project_name in file_path.lower().replace(" ", "_")
+        ]
+        print("Filtered files: ", filtered_files_to_upload)
 
-        # if files_to_upload:
-        #     upload_files_to_blob(connection_string, container_name, files_to_upload, logger)
-        # else:
-        #     logger.warning(f"No files found in directory '{directory}' for upload")
+        # Debugging loop
+        # for file_path, file_name in files_to_upload:
+        #     if clean_project_name in file_path:
+        #         print(f"{file_path} contains the project name.")
+        #     else:
+        #         print(f"{file_path} does NOT contain the project name.")
+
+        # print("Files to upload: ", files_to_upload)
+        # print("Container name: ", container_name)
+        # print("Files to upload: ", files_to_upload)
+
+        # Only upload filtered files. Was files_to_upload previously
+        if filtered_files_to_upload:
+            # upload_files_to_blob(
+            #     connection_string, container_name, files_to_upload, logger)
+            upload_files_to_blob(
+                connection_string, container_name, filtered_files_to_upload, logger)
+        else:
+            logger.warning(
+                f"No files found in directory '{directory}' for upload")
