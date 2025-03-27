@@ -194,27 +194,27 @@ class Dossier:
         # print("Len Project PDF files: ", len(project_pdf_files))
         logger.info("Set up complete\n")
 
-        # logger.info("Starting workflow...")
-        # logger.info("Step 1: Running text processor...\n")
-        # self.text_processor(project_pdf_files)
-        # logger.info("Text processing complete. Moving to image processing.\n")
+        logger.info("Starting workflow...")
+        logger.info("Step 1: Running text processor...\n")
+        self.text_processor(project_pdf_files)
+        logger.info("Text processing complete. Moving to image processing.\n")
 
-        # print("Step 2: Running image processor...")
-        # self.image_processor(self.project_name)
-        # print("Image processing complete. Moving to blob processing.\n")
+        print("Step 2: Running image processor...")
+        self.image_processor(self.project_name)
+        print("Image processing complete. Moving to blob processing.\n")
 
         logger.info("Step 3: Running blob processor...")
         self.blob_processor(self.project_name, self.clean_project_name)
         logger.info("Blob processing complete. Moving to answer generation.\n")
 
-        # logger.info("Step 4: Running answer generator...")
-        # self.answer_generator()
-        # logger.info(
-        #     "Answer generation complete. Moving to report generation.\n")
+        logger.info("Step 4: Running answer generator...")
+        self.answer_generator()
+        logger.info(
+            "Answer generation complete. Moving to report generation.\n")
 
-        # logger.info("Step 5: Running report generator...")
-        # self.report_generator()
-        # logger.info("Report generation complete. Workflow finished!\n")
+        logger.info("Step 5: Running report generator...")
+        self.report_generator()
+        logger.info("Report generation complete. Workflow finished!\n")
 
         end_time = time.time()
         elapsed_time = end_time - start_time

@@ -64,10 +64,10 @@ def blob_processor_run(project_name, clean_project_name):
         logger.info("Start Blob Processor workflow")
 
         # Step 1: Upload local files to Azure Blob Storage
-        # logger.info(
-        #     "Executing local_to_blob: Uploading local files to Azure Blob Storage")
-        # upload_local_to_blob(logger, project_name, clean_project_name)
-        # logger.info("local_to_blob execution completed")
+        logger.info(
+            "Executing local_to_blob: Uploading local files to Azure Blob Storage")
+        upload_local_to_blob(logger, project_name, clean_project_name)
+        logger.info("local_to_blob execution completed")
 
         # Step 2: Push files from Blob Storage to Vector Store
         logger.info(
