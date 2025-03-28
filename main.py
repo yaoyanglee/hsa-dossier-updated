@@ -72,7 +72,8 @@ class Dossier:
 
         while True:
             try:
-                choice = int(input("Enter the project of your choice: "))
+                choice = int(
+                    input("Enter the project number of your choice: "))
                 if 1 <= choice <= len(folders):
                     # Return selected folder
                     return folders[choice - 1], folders[choice - 1].lower().replace(" ", "_")
