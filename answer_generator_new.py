@@ -98,8 +98,8 @@ class AnswerGenerator:
             # List all assistants
             # The issue seems to be a limit in the number of assistants they can display. The max is 20
             assistants = client.beta.assistants.list(limit=50)
-            print("\n(Get assistant) assistant name: ", assistant_name)
-            print("(Get assistant) assistant list: ", assistants.data)
+            # print("\n(Get assistant) assistant name: ", assistant_name)
+            # print("(Get assistant) assistant list: ", assistants.data)
 
             # Find the assistant with matching name
             for assistant in assistants.data:
@@ -134,15 +134,15 @@ class AnswerGenerator:
             f"The thread now has a vector store with that file in its tool resources. {thread.tool_resources.file_search}")
 
         try:
-            print("\nThread: ", thread)
-            print("\nAssistant: ", assistant)
+            # print("\nThread: ", thread)
+            # print("\nAssistant: ", assistant)
 
             # Create and wait for the completion of the assistant's run
             run = self.client.beta.threads.runs.create_and_poll(
                 thread_id=thread.id,
                 assistant_id=assistant.id
             )
-            print("\nRun: ", run)
+            # print("\nRun: ", run)
             self.logger.info(f"run_id: {run.id}")
         except Exception as e:
             print("\nException assistant run: ", e)
@@ -173,12 +173,12 @@ class AnswerGenerator:
                     if file_citation := getattr(annotation, "file_citation", None):
                         cited_file = self.client.files.retrieve(
                             file_citation.file_id)
-                        citations.append(f"[{annotation_map[annotation.text]}] {cited_file.filename}")
+                        citations.append(
+                            f"[{annotation_map[annotation.text]}] {cited_file.filename}")
 
                 # replace citation as index in response
                 message_content.value = message_content.value.replace(
                     annotation.text, f"[{annotation_map[annotation.text]}]")
-
 
             answer = message_content.value
             self.logger.info(
@@ -391,7 +391,7 @@ class AnswerGenerator:
         # Retrieve Assistant 1
         assistant = self.get_assistant_by_name(
             self.client, self.ASSISTANT1_NAME)
-        print("\n (Run Assessment) Assistant: ", assistant)
+        # print("\n (Run Assessment) Assistant: ", assistant)
 
         # Get list of vector stores for the project
         vector_stores = self.get_vectorstores(

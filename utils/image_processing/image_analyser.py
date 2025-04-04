@@ -7,6 +7,8 @@ import numpy as np
 import os
 import pandas as pd
 import time
+from pathlib import Path
+
 
 from alive_progress import alive_bar
 from azure.data.tables import TableServiceClient
@@ -429,7 +431,9 @@ def analyse_images(project_name):
     # Paths to access the input folder and specify the output folder
     # IMAGE_FOLDER = os.path.join(os.path.dirname(__file__), "..", "..", "images")
     # OUTPUT_FOLDER = os.path.join(os.path.dirname(__file__), "..", "..", "output_images")
-    IMAGE_FOLDER = rf"images\{project_name}"
+    images_directory = Path("images")
+    # IMAGE_FOLDER = rf"images\{project_name}"
+    IMAGE_FOLDER = images_directory / project_name
     OUTPUT_FOLDER = "output_images"
 
     table_name = "docmap"

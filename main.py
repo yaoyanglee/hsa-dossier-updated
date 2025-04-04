@@ -4,6 +4,7 @@ import time
 import hashlib
 import logging
 import configparser
+from pathlib import Path
 
 from utils.table import azure_table_client
 
@@ -135,7 +136,8 @@ class Dossier:
         '''
 
         # Retrieving all the file names in the folder.
-        docs_directory = "docs/"
+        # docs_directory = "docs/"
+        docs_directory = Path("docs")
         # Get all PDF files from the directory
         pdf_files = [
             os.path.join(root, file)
@@ -143,11 +145,12 @@ class Dossier:
             for file in files if file.endswith(".pdf")
         ]
 
+        project_directory = docs_directory / f"{self.project_name}"
         pdf_files = [
-            file for file in pdf_files if f"docs/{self.project_name}\\" in file]
+            file for file in pdf_files if str(project_directory) in file]
 
-        # print("PDF Files: ", pdf_files)
-        # print("Len PDF Files: ", len(pdf_files))
+        print("PDF Files: ", pdf_files)
+        print("Len PDF Files: ", len(pdf_files))
 
         if not pdf_files:
             logger.info("No PDF files found in the directory.")

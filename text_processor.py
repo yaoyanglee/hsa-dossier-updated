@@ -200,18 +200,18 @@ def text_processor_run(project_files):
                 # Convert to lowercase and replace spaces with underscores
                 project_name = os.path.basename(
                     parent_path).lower().replace(" ", "_")
-                print("project name: ", project_name)
+                # print("project name: ", project_name)
 
                 # Derive source_folder name from the filename (remove extension and apply formatting)
                 base_filename = os.path.basename(filename)
                 document_name = os.path.splitext(base_filename)[0].lower().replace(
                     " ", "_")  # Convert to lowercase and replace spaces with underscores
-                print("document name: ", document_name)
+                # print("document name: ", document_name)
 
                 # Derive subfolder name based on parent folder
                 subfolder_name = os.path.basename(
                     os.path.dirname(filename)).lower().replace(" ", "_")
-                print("subfolder name: ", subfolder_name)
+                # print("subfolder name: ", subfolder_name)
 
                 # Check subfolder and categorize
                 if "literature" in subfolder_name:

@@ -184,7 +184,7 @@ def upload_local_to_blob(logger, project_name, clean_project_name):
         logger.info(
             f"Processing directory '{directory}' for container '{container_name}'")
 
-        print("Directory: ", directory)
+        # print("Directory: ", directory)
         file_type = ".jpg" if directory == "images" else ".txt"
         files_to_upload = get_all_files_with_custom_blob_name(
             [directory], file_type, logger, clean_project_name)
@@ -194,7 +194,7 @@ def upload_local_to_blob(logger, project_name, clean_project_name):
             (file_path, file_name) for file_path, file_name in files_to_upload
             if clean_project_name in file_path.lower().replace(" ", "_")
         ]
-        print("Filtered files: ", filtered_files_to_upload)
+        # print("Filtered files: ", filtered_files_to_upload)
 
         # Debugging loop
         # for file_path, file_name in files_to_upload:
