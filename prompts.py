@@ -131,8 +131,12 @@ Questions:
 2) Does the system require human intervention? If so, at which specific stage(s) of the workflow does it occur?
 3) What is the degree or extent of human intervention required, and how does it integrate with the automated processes of the device?
 
-Remember to cite the information when providing your assessment.
-Remember to only answer using information from the documents provided.
+### Additional Guidelines
+- For each question, check if the provided sources are sufficient to answer.
+    - if not, answer "There is not enough information to answer this question."
+    - if yes, proceed to answer the questions and providing the relevant sources.
+- Remember to cite the information when providing your assessment.
+- Remember to only answer using information from the documents provided.
 """
 
 PROMPT_Q5 = """ 
@@ -188,7 +192,7 @@ Questions:
 
 PROMPTS_DICT = {"Input data and features/ attributes used to generate the corresponding output": PROMPT_Q1,
                 "Source, size and attribution of training, validation and test datasets": PROMPT_Q2,
-                "Artificial Intelligence model description and selection": PROMPT_Q3, 
+                "Artificial Intelligence model description and selection": PROMPT_Q3,
                 "Device workflow including how the output result should be used": PROMPT_Q4,
                 "Test protocol for performance verification and validation of the Artificial Intelligence Medical Devices": PROMPT_Q5,
                 "Interval for training data update cycle": PROMPT_Q6,

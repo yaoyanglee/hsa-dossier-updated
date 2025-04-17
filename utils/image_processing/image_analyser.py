@@ -7,6 +7,8 @@ import numpy as np
 import os
 import pandas as pd
 import time
+from pathlib import Path
+
 
 from alive_progress import alive_bar
 from azure.data.tables import TableServiceClient
@@ -366,7 +368,7 @@ def analyse_image(image_path, llm):
         # extract context of image
         base, _ = os.path.splitext(image_path)
         context_path = f"{base}-context.txt"
-        with open(context_path, "r") as file:
+        with open(context_path, "r", encoding='utf-8') as file:
             context = file.read()
         message[1]["content"][2]["text"] = context
 
@@ -425,11 +427,13 @@ def process_images(image_folder, llm, table_name, output_folder="output_images")
             bar()
 
 
-def analyse_images():
+def analyse_images(project_name):
     # Paths to access the input folder and specify the output folder
     # IMAGE_FOLDER = os.path.join(os.path.dirname(__file__), "..", "..", "images")
     # OUTPUT_FOLDER = os.path.join(os.path.dirname(__file__), "..", "..", "output_images")
-    IMAGE_FOLDER = "images"
+    images_directory = Path("images")
+    # IMAGE_FOLDER = rf"images\{project_name}"
+    IMAGE_FOLDER = images_directory / project_name
     OUTPUT_FOLDER = "output_images"
 
     table_name = "docmap"

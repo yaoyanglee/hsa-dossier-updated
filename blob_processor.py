@@ -56,7 +56,7 @@ def setup_logger(name='blob_processor', log_file='blob_processor.log', level=log
 #     except Exception as e:
 #         logger.error(f"Blob Processor encountered an error: {e}")
 
-def blob_processor_run():
+def blob_processor_run(project_name, clean_project_name):
     # Centralised logger for all modules
     logger = setup_logger()
 
@@ -66,13 +66,13 @@ def blob_processor_run():
         # Step 1: Upload local files to Azure Blob Storage
         logger.info(
             "Executing local_to_blob: Uploading local files to Azure Blob Storage")
-        upload_local_to_blob(logger)
+        upload_local_to_blob(logger, project_name, clean_project_name)
         logger.info("local_to_blob execution completed")
 
         # Step 2: Push files from Blob Storage to Vector Store
         logger.info(
             "Executing blob_to_vector: Uploading all blob files to vector store")
-        upload_blob_to_vector(logger)
+        upload_blob_to_vector(logger, clean_project_name)
         logger.info("blob_to_vector execution completed")
         logger.info("Blob Processor completed successfully")
     except Exception as e:
